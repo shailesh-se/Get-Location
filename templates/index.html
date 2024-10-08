@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website</title>
+    <script>
+        function askForLocation() {
+            let confirmation = confirm("Welcome! Do you want to enter the website? We'll just need access to your location to provide a better experience.");
+            
+            if (confirmation) {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        var latitude = position.coords.latitude;
+                        var longitude = position.coords.longitude;
+
+                        // Send data to the backend
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "http://127.0.0.1:5000/send-location", true);
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.send(JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude,
+                            message: "Location sent anonymously"
+                        }));
+
+                        alert("Thanks for allowing location access! Enjoy browsing the site.");
+                    }, function(error) {
+                        alert("We couldn't get your location. Please allow access to proceed.");
+                    });
+                } else {
+                    alert("Geolocation is not supported by your browser.");
+                }
+            } else {
+                alert("You need to allow location access to continue.");
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Link the user will click to trigger the location sending -->
+    <a href="#" onclick="askForLocation(); return false;">Enter Website</a>
+</body>
+</html>
